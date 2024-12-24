@@ -1,0 +1,29 @@
+{% extends 'layouts/projects_template.html' %}
+{% load static %}
+
+{% block title %} All Projects {% endblock title %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>All Projects</h2>
+    <div class="row">
+        {% for project, image, donation, progress in zipped_data %}
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                {% if image %}
+                <img src="{{ image }}" class="card-img-top" alt="{{ project.title }}">
+                {% else %}
+                <img src="{% static 'assets/img/default-project-image.jpg' %}" class="card-img-top" alt="{{ project.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ project.title }}</h5>
+                    <p class="card-text">{{ project.details|truncatewords:20 }}</p>
+                    <p>Donations: {{ donation }}</p>
+                    <p>Progress: {{ progress }}%</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

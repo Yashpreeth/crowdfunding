@@ -1,0 +1,18 @@
+{% extends 'layouts/projects_template.html' %}
+{% load static %}
+
+{% block project_type %}
+<h2>Category: {{ title.name }}</h2>
+
+<h3>Projects in this category:</h3>
+<ul>
+    {% for project, donation, progress, image in zipped_data %}
+    <li>
+        <img src="{{ image }}" alt="{{ project.name }}">
+        <h2>{{ project.name }}</h2>
+        <p>Donations: {{ donation }}</p>
+        <p>Progress: {{ progress }}%</p>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock project_type %}

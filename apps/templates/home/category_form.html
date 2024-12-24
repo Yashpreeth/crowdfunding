@@ -1,0 +1,40 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Forms {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block body_class %} forms-sections {% endblock body_class %}
+
+{% block content %}
+{% comment %} {% include "includes/navigation-light.html" %} {% endcomment %}
+
+<div class="container mt-5">
+    <div class="row d-flex justify-content-center">
+        <form method="post" action="{% url 'add_category' %}" class="card w-50 text-center mt-5" autocomplete="off">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {% if form_error %}
+                <span class="text-error">{{ form_error }}</span>
+            {% endif %}
+            <button type="submit" class="btn bg-outline-danger">Save</button>
+        </form>
+    </div>
+
+    <div class="row d-flex justify-content-center mt-5">
+        <h3>Categories:</h3>
+        <ul>
+            {% for category in categories %}
+                <li>{{ category.name }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+<script src="/static/assets/js/soft-design-system.min.js?v=1.0.1" type="text/javascript"></script>
+{% endblock javascripts %}

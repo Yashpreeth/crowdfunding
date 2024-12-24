@@ -1,0 +1,169 @@
+{% extends 'layouts/base.html' %}
+{% load index %}
+{% block title %} Profile {% endblock title %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="../../static/assets/css/user-profile.css">
+{% endblock stylesheets %}
+
+{% block body_class %} profile-body {% endblock body_class %}
+
+{% block content %}
+
+<!-- Delete Account Modal -->
+{% include "includes/modals/delete_acc_modal.html" %}
+
+<div id="user-profile" class="container my-5 py-5">
+    <div class="row">
+        <!-- left panel -->
+        <div class="col-md-3 profile-nav shadow-lg h-100 p-0">
+            <div class="user-heading round bg-gradient-primary ">
+                <img src="{{user.profile_img.url}}" class="card-img-top border border-2 rounded-circle my-3"
+                    alt="profile img" style="width: 150px; height:150px;">
+                <h4 class="text-white font-weight-bolder mt-2 ">{{user.first_name|title}} {{user.last_name|title}}
+                </h4>
+                <p class="text-sm">{{user.email}}</p>
+                <a class="text-white" {% if user.facebook_profile %} href="{{ user.facebook_profile }}" {% endif %}><i class="fa-brands fa-facebook-f mx-1"></i></a>
+                <a class="text-white"><i class="fa-brands fa-twitter mx-1"></i></a>
+                <a class="text-white"><i class="fa-brands fa-instagram mx-1"></i></a>
+            </div>
+            
+            <ul class="nav flex-column bg-white">
+                <li class="py-1"><a href="{% url 'editProfile' %}"> <i class="fa fa-edit text-center" style="width: 30px;"></i> Edit profile</a>
+                </li>
+                <li class="py-1"><a href="{% url 'create_project' %}"> <i class="fa fa-plus text-center" style="width: 30px;"></i> Create
+                        Project</a></li>
+                <li class="py-1"><a type="button" data-bs-toggle="modal" data-bs-target="#deleteAccModal"> <i class="fa fa-user-slash text-center" style="width: 30px;"></i> Delete
+                        Account</a></li>
+            </ul>
+        </div>
+
+        <!-- right panel -->
+        <div class="col-md-9">
+            <div class="row">
+                <!-- User Details -->
+                <div class="col-md-9 ">
+                    <div class="profile-info shadow-lg p-0">
+                        <div class="bg-white rounded px-5 py-4 d-flex justify-content-around">
+                            <div class="d-flex">
+                                <div class="">
+                                    <p>First Name :</p>
+                                    <p>Last Name :</p>
+                                    <p>Country :</p>
+                                </div>
+                                <div class="">
+                                    <p class="mx-2 text-dark font-weight-bold">{{user.first_name|title}}</p>
+                                    <p class="mx-2 text-dark font-weight-bold">{{user.last_name|title}}</p>
+                                    {% if user.country %}
+                                    <p class="mx-2 text-dark font-weight-bold">{{user.country|title}}</p>
+                                    {% else %}
+                                    <p class="mx-2">
+                                        <a class="text-secondary" href="{% url 'editProfile'  %}">click to add</a>
+                                    </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="d-flex">
+                                <div class="">
+                                    <p>Email :</p>
+                                    <p>Mobile :</p>
+                                    <p>Birthday :</p>
+                                </div>
+                                <div class="">
+                                    <p class="mx-2 text-dark font-weight-bold">{{user.email}}</p>
+                                    <p class="mx-2 text-dark font-weight-bold">{{ user.phone }}</p>
+                                    {% if user.birthdate %}
+                                    <p class="mx-2 text-dark font-weight-bold">{{user.birthdate|title}}</p>
+                                    {% else %}
+                                    <p class="mx-2">
+                                        <a class="text-secondary" href="{% url 'editProfile'  %}">click to add</a>
+                                    </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="col-md-3 profile-info d-flex flex-column justify-content-between">
+                    <div class="row">
+                        <div class="col-md-12 bg-white rounded px-4 py-4 d-flex shadow-lg p-0">
+                            <h5><i class="fa fa-coins text-primary"></i></h5>
+                            <h5 class="mx-3">{{ donations|length }} <span
+                                    class="text-light text-dark mx-1">Donations</span></h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 bg-white rounded px-4 py-4 d-flex shadow-lg p-0">
+                            <h5><i class="fa fa-chart-pie text-primary"></i></i></h5>
+                            <h5 class="mx-3">{{ projects|length }} <span
+                                    class="text-light text-dark mx-1">Projects</span></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Table -->
+            <div class="row">
+                <div class="col-md-12 mt-3" style="padding-right: 0;">
+                    <table class="table table-hover bg-white rounded shadow-lg p-0 text-center">
+                        <thead>
+                            <tr>
+                                <th class="px-5 py-3" scope="col">Title</th>
+                                <th class="px-5 py-3" scope="col">Donation</th>
+                                <th class="px-5 py-3 " scope="col">Created at</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if donations %}
+                                {% for donation in donations%}
+                                <tr>
+                                    <td class="px-5 py-3">
+                                        <a href="{% url 'show_project'  donation.project_id %}">
+                                            {{donation.project.title|truncatewords:2}}
+                                        </a>
+                                    </td>
+                                    <td class="px-5 py-3">{{donation.donation}} INR </td>
+                                    <td class="px-5 py-3">{{donation.created_at | date:"m/d/Y"}}</td>
+                                </tr>
+                                {%endfor%}
+                            {%else%}
+                                <tr><td colspan="3">You haven't donated to any project yet :(</td></tr>
+                            {%endif%}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 " style="padding-right: 0;">
+                    <div class="row">
+                        {% for project in projects%}
+                        <div class="col-md-4">
+                            <a href="{% url 'show_project' project.id %}">
+                                <div style="height:150px">
+                                    <img src="{{ images|index:forloop.counter0 }}" alt="project-img"
+                                        class="img-fluid rounded" style="height: inherit; width: 100%;">
+                                </div>
+                            </a>
+                            <div class="d-flex justify-content-between bg-white px-3 pt-3 mb-0">
+                                <a href="{% url 'show_project' project.id %}">
+                                    <h5>{{ project.title|title }}</h5>
+                                </a>
+                                <p>{{project.total_target}} INR</p>
+                            </div>
+                            <a href="{% url 'show_project' project.id %}">
+                                <p class="bg-white px-3 pb-3">{{project.details|truncatewords:20}}</p>
+                            </a>
+                        </div>
+                        {%endfor%}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
